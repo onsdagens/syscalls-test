@@ -1,7 +1,7 @@
 #![no_std]
 
 
-pub fn my_syscall(buf: &[u8; 64]) {
+pub fn write(buf: &[u8; 64]) {
     #[cfg(target_arch = "aarch64")]
     unsafe {
         core::arch::asm!("
@@ -28,4 +28,23 @@ pub fn my_syscall(buf: &[u8; 64]) {
     }
 }
 
-
+pub fn exit() -> ! {
+    // ARM
+    #[cfg(target_arch = "aarch64")]
+    unsafe{core::arch::asm!("
+                // exit syscall
+                mov x8, 94
+                //exit code 0
+                mov x0, 0
+                svc 0
+   ", options(noreturn))}
+    // X86
+    #[cfg(target_arch = "x86_64")]
+    unsafe{core::arch::asm!("
+                // exit
+                mov rax,60
+                // exit code 0
+                mov rbx,0
+                syscall
+   ", options(noreturn))}
+}

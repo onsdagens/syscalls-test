@@ -1,0 +1,10 @@
+[target.aarch64-unknown-none]
+runner = "./run.sh"
+
+rustflags = [
+    # LLD (shipped with the Rust toolchain) is used as the default linker
+    "-g",
+  #    "-C","target-feature=+zmmul",
+    "-C","link-arg=-Tmemory.x",
+
+]
